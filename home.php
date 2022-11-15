@@ -1,3 +1,30 @@
+<?php
+require "dbBroker.php";
+require "model/ebicikli.php";
+
+session_start();
+
+if(!isset($_SESSION['user_id'])){
+    header('Location:index.php');
+    exit();
+}
+
+$rezultat = Ebicikli::getAll($conn);
+
+if(!$rezultat){
+    echo "Nastala je greška prilikom izvođenja upitanja <br>";
+    die();
+}
+
+if($rezultat->num_rows == 0){
+    echo "Nema e-bicikli";
+    die();
+} else {
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -50,6 +77,49 @@
       
       <!-- header section end -->
 
+<div class="jumbotron" style="color: black;"><h1>Rent a e-bike</h1></div> 
+    <!-- tabela e-bicikli-->>
+    
+    <div class="panel-body">
+        <table id="myTable" class="table table-hover table-striped" style="color: black; background-color: rgb(153, 179, 255, 0.5);" >
+            <thead class ="thead">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Naziv</th>
+                <th scope="col">Model</th>  
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            while ($red = $rezultat->fetch_array()) :
+                ?>
+                <tr>
+                    <td><?php echo $red["id"] ?></td>
+                    <td><?php echo $red["naziv"] ?></td>
+                    <td><?php echo $red["model"] ?></td>
+
+                </tr>
+              <?php
+                 endwhile;
+            
+         } //zatvaranje elsa
+          ?> 
+            </tbody>
+        </table>
+
+<!-- Dugmad za rezervaciju-->
+        <div class="row" style="background-color: rgba(99, 117, 179, 0.075);">
+    <div class="col-md-4">
+        <button id="btn" class="btn btn-info btn-block" 
+        style="background-color: rgb(102, 153, 255) !important; border: 2px solid white " > Prikazi rezervacije</button>
+    </div>
+    <div class="col-md-4" style="width: 200%; display: flex ; padding-top: 30px;">
+        <button id="btn-dodaj" type="button" class="btn btn-success btn-block"
+                style="background-color: rgb(102, 153, 255); border: 2px solid white;" data-toggle="modal" data-target="#myModal"> Rezervisi e-bicikl</button>
+
+    </div>
+   
+    
  
       
       <!-- Javascript files-->
